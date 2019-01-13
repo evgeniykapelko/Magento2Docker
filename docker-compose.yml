@@ -4,7 +4,7 @@ services:
  
     apache-php:
         build: ./web
- 
+ 		restart: always	
         ports:
         - "6080:80"
  
@@ -15,7 +15,7 @@ services:
         - ./apache2/apache.conf:/etc/apache2/sites-available/000-default.conf
         - ./apache2/xdebug.ini:/etc/php/7.2/mods-available/xdebug.ini
         - ./html:/var/www/html
-        # - ./apache2/ports.conf:/etc/apache2/ports.conf
+        # - ./docker/ports.conf:/etc/apache2/ports.conf
         environment:
         - TERM=xterm-256color
         networks:
@@ -25,7 +25,9 @@ services:
                 - ${SERVER_ALIAS}
     db:
         image: mysql:5.7
+		restart: always
         volumes:
+        # - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
         - ./databases/data:/var/lib/mysql
         environment:
             MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -36,6 +38,7 @@ services:
     redis:
         image: redis:latest
     phpmyadmin:
+    restart: always
         image: phpmyadmin/phpmyadmin
         depends_on:
         - db
