@@ -1,6 +1,6 @@
 # Magento2Docker
 Сборка работает если в /etc/hosts добавить :
-  127.0.0.1       www.magento230.docker magento230.docker
+  127.0.0.1       www.magento2.docker magento2.docker
 А composer запуститься , только если внутри контейнера запустить composer install  
   
 # Нужно сделать  
