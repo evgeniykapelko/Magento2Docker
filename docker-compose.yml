@@ -1,0 +1,53 @@
+version: "3.6"
+
+services:
+ 
+    apache-php:
+        build: ./web
+ 
+        ports:
+        - "6080:80"
+ 
+        expose:
+        - "9000"
+ 
+        volumes:
+        - ./apache2/apache.conf:/etc/apache2/sites-available/000-default.conf
+        - ./apache2/xdebug.ini:/etc/php/7.2/mods-available/xdebug.ini
+        - ./html:/var/www/html
+        # - ./apache2/ports.conf:/etc/apache2/ports.conf
+        environment:
+        - TERM=xterm-256color
+        networks:
+            default:
+                aliases:
+                - ${SERVER_NAME}
+                - ${SERVER_ALIAS}
+    db:
+        image: mysql:5.7
+        volumes:
+        - ./databases/data:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
+            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+ 
+    redis:
+        image: redis:latest
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        depends_on:
+        - db
+        ports:
+        - "8080:80"
+        environment:
+            MYSQL_USERNAME: ${MYSQL_ROOT_USERNAME}
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    composer:
+        image: composer:1.8
+        volumes:
+           - ${APP_PATH_HOST}:${APP_PATH_CONTAINER}
+        working_dir: ${APP_PATH_CONTAINER}
+        command: install
+
